@@ -34,6 +34,6 @@ public interface BlackjackConfig extends Config
 	)
 	default SupportedBoss selectedBoss()
 	{
-		return SupportedBoss.VORKATH;
+		return SupportedBoss.VARDORVIS;
 	}
 }
