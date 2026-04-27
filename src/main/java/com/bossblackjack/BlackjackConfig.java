@@ -14,7 +14,7 @@ public interface BlackjackConfig extends Config
 	)
 	default int targetValue()
 	{
-		return 100000;
+		return 250000;
 	}
 
 	@ConfigItem(
@@ -24,7 +24,7 @@ public interface BlackjackConfig extends Config
 	)
 	default int simThresholdPercent()
 	{
-		return 50;
+		return 80;
 	}
 
 	@ConfigItem(

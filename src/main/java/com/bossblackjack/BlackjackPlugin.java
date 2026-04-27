@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.Item;
+import net.runelite.api.Player;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
@@ -15,6 +16,7 @@ import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.ItemStack;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.loottracker.LootReceived;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.List;
@@ -43,10 +45,16 @@ public class BlackjackPlugin extends Plugin
 
 	private final LootSimulator simulator = new LootSimulator();
 
+	private boolean playerStood = false;
+
+	public void onStandPressed(){
+		playerStood = true;
+	}
+
 	@Override
 	protected void startUp() throws Exception
 	{
-		panel = new BlackjackPanel();
+		panel = new BlackjackPanel(this);
 		BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/icon.png");
 		navButton = NavigationButton.builder()
 				.tooltip("Boss Blackjack")
