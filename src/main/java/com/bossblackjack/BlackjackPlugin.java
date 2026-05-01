@@ -54,7 +54,7 @@ public class BlackjackPlugin extends Plugin
 	@Override
 	protected void startUp() throws Exception
 	{
-		panel = new BlackjackPanel(this);
+		panel = new BlackjackPanel(this, itemManager);
 		BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/icon.png");
 		navButton = NavigationButton.builder()
 				.tooltip("Boss Blackjack")
@@ -127,7 +127,6 @@ public class BlackjackPlugin extends Plugin
 		}
 
 		log.debug("Player: {} gp | Sim: {} gp | Target: {} gp | {}", playerTotal, simTotal, targetValue, result);
-		panel.updateResult(playerTotal, simTotal, targetValue, result);
 	}
 
 	@Provides

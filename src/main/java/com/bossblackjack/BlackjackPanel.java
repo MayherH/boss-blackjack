@@ -1,84 +1,134 @@
 package com.bossblackjack;
 
+import net.runelite.client.game.ItemManager;
+import net.runelite.client.ui.ColorScheme;
+import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class BlackjackPanel extends PluginPanel
 {
     private final BlackjackPlugin plugin;
-
-    private final JLabel targetLabel = new JLabel("Target: -");
-    private final JLabel playerLabel = new JLabel("Your loot: -");
-    private final JLabel simLabel = new JLabel("Sim loot: -");
-    private final JLabel resultLabel = new JLabel("Result: -");
+    private final ItemManager itemManager;
+    private final JLabel targetLabel = new JLabel("Target: ");
     private final JButton standButton = new JButton("Stand");
 
-    public BlackjackPanel(BlackjackPlugin plugin)
-    {
+    private final JPanel lootGrid = new JPanel(new GridLayout(0, 5, 1, 1));
+
+    public BlackjackPanel(BlackjackPlugin plugin, ItemManager itemManager) {
         this.plugin = plugin;
+        this.itemManager = itemManager;
 
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(10, 10, 10, 10));
+        setBackground(ColorScheme.DARK_GRAY_COLOR);
 
         JPanel content = new JPanel();
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+        content.setBackground(ColorScheme.DARK_GRAY_COLOR);
 
         JLabel title = new JLabel("Boss Blackjack");
-        title.setFont(new Font("Arial", Font.BOLD, 16));
+        title.setFont(FontManager.getRunescapeBoldFont().deriveFont(22f));
+        title.setForeground(Color.WHITE);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        resultLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        resultLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        targetLabel.setForeground(Color.WHITE);
+
+
+        lootGrid.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        lootGrid.setBorder(new EmptyBorder(2, 2, 2, 2));
+        lootGrid.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         content.add(title);
         content.add(Box.createVerticalStrut(10));
         content.add(targetLabel);
         content.add(Box.createVerticalStrut(5));
-        content.add(playerLabel);
-        content.add(Box.createVerticalStrut(5));
-        content.add(simLabel);
-        content.add(Box.createVerticalStrut(10));
-        content.add(resultLabel);
-
-        add(content, BorderLayout.NORTH);
-
-        content.add(resultLabel);
+        content.add(lootGrid);
         content.add(Box.createVerticalStrut(10));
         content.add(standButton);
 
         standButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        standButton.addActionListener(e -> plugin.onStandPressed());
 
-        standButton.addActionListener(e ->
+        add(content, BorderLayout.NORTH);
+
+        SwingUtilities.invokeLater(() -> // just test items
         {
-            plugin.onStandPressed();
-
+            addLootItem(995, 10000000); // coins
+            addLootItem(4151, 1);     // abyssal whip
+            addLootItem(11840, 1);    // dragon boots
+            addLootItem(11235, 1);    // dark bow
+            addLootItem(6585, 1);     // amulet of fury
+            addLootItem(560, 250);    // death runes
+            addLootItem(565, 500);    // blood runes
         });
     }
 
-    public void updateResult(long playerTotal, long simTotal, int targetValue, String result)
-    {
-        targetLabel.setText("Target: " + String.format("%,d", targetValue) + " gp");
-        playerLabel.setText("Your loot: " + String.format("%,d", playerTotal) + " gp");
-        simLabel.setText("Sim loot: " + String.format("%,d", simTotal) + " gp");
-        resultLabel.setText("Result: " + result);
+    public void addLootItem(int itemId, int quantity) {
+        BufferedImage image = itemManager.getImage(itemId, quantity, false);
 
-        // color the result label
-        if (result.contains("You win"))
-        {
-            resultLabel.setForeground(Color.GREEN);
-        }
-        else if (result.contains("Sim wins"))
-        {
-            resultLabel.setForeground(Color.RED);
-        }
-        else
-        {
-            resultLabel.setForeground(Color.YELLOW);
-        }
-
-        revalidate();
-        repaint();
+        lootGrid.add(createLootSlot(image, quantity));
+        lootGrid.revalidate();
+        lootGrid.repaint();
     }
+
+    public void clearLootGrid() {
+        lootGrid.removeAll();
+        lootGrid.revalidate();
+        lootGrid.repaint();
+    }
+
+    private JLayeredPane createLootSlot(BufferedImage image, int quantity) {
+        JLayeredPane slot = new JLayeredPane();
+        slot.setPreferredSize(new Dimension(42, 42));
+        slot.setMinimumSize(new Dimension(42, 42));
+        slot.setMaximumSize(new Dimension(42, 42));
+        slot.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        slot.setOpaque(true);
+
+        JLabel icon = new JLabel(new ImageIcon(image));
+        icon.setBounds(5, 5, 36, 32);
+        icon.setHorizontalAlignment(SwingConstants.CENTER);
+        icon.setVerticalAlignment(SwingConstants.CENTER);
+
+        String qtyText = String.valueOf(quantity);
+        Color qtyColor;
+
+        if (quantity >= 10000000)
+        {
+            qtyText = (quantity / 1000000) + "M";
+            qtyColor = new Color(0, 255, 128);
+        }
+        else if (quantity >= 100000)
+        {
+            qtyText = (quantity / 1000) + "K";
+            qtyColor = Color.WHITE;
+        } else
+        {
+            qtyText = String.valueOf(quantity);
+            qtyColor = Color.YELLOW;
+        }
+
+
+        JLabel shadow = new JLabel(qtyText);
+        shadow.setFont(FontManager.getRunescapeSmallFont());
+        shadow.setForeground(Color.BLACK);
+        shadow.setBounds(4, 6, 36, 12);
+
+        JLabel text = new JLabel(qtyText);
+        text.setFont(FontManager.getRunescapeSmallFont());
+        text.setForeground(qtyColor);
+        text.setBounds(3, 5, 36, 12);
+
+        slot.add(icon, JLayeredPane.DEFAULT_LAYER);
+        slot.add(shadow, JLayeredPane.PALETTE_LAYER);
+        slot.add(text, JLayeredPane.MODAL_LAYER);
+
+        return slot;
+    }
+
 }
