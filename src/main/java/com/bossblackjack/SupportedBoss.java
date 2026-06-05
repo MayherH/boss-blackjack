@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum SupportedBoss
 {
+    GOBLIN("Goblin"),
     VORKATH("Vorkath"),
     ZULRAH("Zulrah"),
     VARDORVIS("Vardorvis"),

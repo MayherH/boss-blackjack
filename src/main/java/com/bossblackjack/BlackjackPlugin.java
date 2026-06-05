@@ -1,20 +1,26 @@
 package com.bossblackjack;
 
+import com.google.gson.FieldAttributes;
 import com.google.inject.Provides;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import lombok.Getter;
 import net.runelite.api.Client;
+import net.runelite.api.NPC;
+import net.runelite.api.NPCComposition;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ServerNpcLoot;
 import net.runelite.client.events.NpcLootReceived;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.ItemStack;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.util.Text;
+import net.runelite.http.api.loottracker.LootRecordType;
 
 import java.awt.image.BufferedImage;
 import java.util.Collection;
@@ -68,32 +74,22 @@ public class BlackjackPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onNpcLootReceived(NpcLootReceived event) {
-		String npcName = event.getNpc().getName();
-		SupportedBoss selectedBoss = config.selectedBoss();
+	public void onServerNpcLoot(final ServerNpcLoot event)
+	{
+		final NPCComposition npc = event.getComposition();
+		final Collection<ItemStack> items = event.getItems();
+		final String name = Text.removeTags(npc.getName());
 
-		// check if the npc that dropped loot matches the boss the user selected
-		if (npcName == null || !npcName.equalsIgnoreCase(selectedBoss.getNpcName()))
-		{
-			return;
+		if (name.equalsIgnoreCase(config.selectedBoss().getNpcName())){
+			for (ItemStack item : items){
+				int itemId = item.getId();
+				int quantity = item.getQuantity();
+				panel.getPlayerGrid().addLootItem(itemId, quantity);
+			}
 		}
 
-		int targetValue = config.targetValue();
-		int thresholdPercent = config.simThresholdPercent();
 
-		// calculate player's real loot value
-		Collection<ItemStack> items = event.getItems();
-		for (ItemStack item : items)
-		{
-			playerTotal += (long) itemManager.getItemPrice(item.getId()) * item.getQuantity();
-		}
 
-		// run the simulation
-		List<SimulatedDrop> simDrops = simulator.simulate(selectedBoss, targetValue, thresholdPercent);
-		for (SimulatedDrop drop : simDrops)
-		{
-			simTotal += (long) itemManager.getItemPrice(drop.getItemId()) * drop.getQuantity();
-		}
 	}
 
 	@Getter
