@@ -88,8 +88,6 @@ public class BlackjackPlugin extends Plugin
 			}
 		}
 
-
-
 	}
 
 	@Getter

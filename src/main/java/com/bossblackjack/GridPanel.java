@@ -3,7 +3,8 @@ package com.bossblackjack;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
-
+import java.util.Map;
+import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -21,6 +22,11 @@ public class GridPanel extends JPanel
 
     private final JPanel header = new JPanel(new BorderLayout());
     private final JPanel lootGrid = new JPanel(new GridLayout(0, GRID_COLUMNS, 1, 1));
+
+    public final Map<Integer, Integer> itemQuantities = new HashMap<>();
+    private final Map<Integer, JLayeredPane> itemSlots = new HashMap<>();
+
+
 
     public GridPanel(ItemManager itemManager, String leftText, String rightText)
     {
@@ -61,6 +67,11 @@ public class GridPanel extends JPanel
         header.add(rightLabel, BorderLayout.EAST);
     }
 
+    public int getQuantity(int itemId)
+    {
+        return itemQuantities.getOrDefault(itemId, 0);
+    }
+
     private void setupGrid()
     {
         lootGrid.setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -81,10 +92,75 @@ public class GridPanel extends JPanel
     {
         removeEmptySlots();
 
+        if (itemQuantities.containsKey(itemId))
+        {
+            int newQuantity = itemQuantities.get(itemId) + quantity;
+            itemQuantities.put(itemId, newQuantity);
+
+            JLayeredPane slot = itemSlots.get(itemId);
+            updateSlotQuantity(itemId, newQuantity);
+
+            fillRowWithEmptySlots();
+            lootGrid.revalidate();
+            lootGrid.repaint();
+            return;
+        }
+
+        itemQuantities.put(itemId, quantity);
+
         BufferedImage image = itemManager.getImage(itemId, quantity, false);
-        lootGrid.add(createLootSlot(image, quantity));
+        JLayeredPane slot = createLootSlot(image, quantity);
+
+        itemSlots.put(itemId, slot);
+        lootGrid.add(slot);
 
         fillRowWithEmptySlots();
+
+        lootGrid.revalidate();
+        lootGrid.repaint();
+    }
+    public void updateSlotQuantity(int itemId, int quantity)
+    {
+        JLayeredPane slot = itemSlots.get(itemId);
+
+
+        if (slot == null)
+        {
+            return;
+        }
+
+        itemQuantities.put(itemId, quantity);
+
+        String qtyText;
+        Color qtyColor;
+
+        if (quantity == 1)
+        {
+            qtyText = "";
+            qtyColor = Color.YELLOW;
+        }
+        else if (quantity >= 10_000_000)
+        {
+            qtyText = (quantity / 1_000_000) + "M";
+            qtyColor = new Color(0, 255, 128);
+        }
+        else if (quantity >= 100_000)
+        {
+            qtyText = (quantity / 1000) + "K";
+            qtyColor = Color.WHITE;
+        }
+        else
+        {
+            qtyText = String.valueOf(quantity);
+            qtyColor = Color.YELLOW;
+        }
+
+        JLabel shadow = (JLabel) slot.getClientProperty("qtyShadow");
+        JLabel text = (JLabel) slot.getClientProperty("qtyText");
+
+        shadow.setText(qtyText);
+        text.setText(qtyText);
+        text.setForeground(qtyColor);
 
         lootGrid.revalidate();
         lootGrid.repaint();
@@ -92,10 +168,19 @@ public class GridPanel extends JPanel
 
     public void clearLootGrid()
     {
+        itemQuantities.clear();
+        itemSlots.clear();
+
         lootGrid.removeAll();
         lootGrid.revalidate();
         lootGrid.repaint();
     }
+
+    public boolean containsItem(int itemId)
+    {
+        return itemQuantities.containsKey(itemId);
+    }
+
 
     private void fillRowWithEmptySlots()
     {
@@ -191,6 +276,9 @@ public class GridPanel extends JPanel
         slot.add(icon, JLayeredPane.DEFAULT_LAYER);
         slot.add(shadow, JLayeredPane.PALETTE_LAYER);
         slot.add(text, JLayeredPane.MODAL_LAYER);
+
+        slot.putClientProperty("qtyShadow", shadow);
+        slot.putClientProperty("qtyText", text);
 
         return slot;
     }
