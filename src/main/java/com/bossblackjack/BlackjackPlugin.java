@@ -25,6 +25,7 @@ import net.runelite.http.api.loottracker.LootRecordType;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -87,8 +88,31 @@ public class BlackjackPlugin extends Plugin
 				panel.getPlayerGrid().addLootItem(itemId, quantity);
 			}
 		}
+		int gridValue = calculateGridValue(panel.getPlayerGrid());
+		panel.getPlayerGrid().setRightText(gridValue + " gp");
 
 	}
+
+	public int calculateGridValue(GridPanel grid)
+	{
+		int totalValue = 0;
+
+		if (grid == null)
+		{
+			return 0;
+		}
+
+		for (Map.Entry<Integer, Integer> entry : grid.getItemQuantities().entrySet())
+		{
+			int itemId = entry.getKey();
+			int quantity = entry.getValue();
+
+			totalValue += itemManager.getItemPrice(itemId) * quantity;
+		}
+
+		return totalValue;
+	}
+
 
 	@Getter
 	public long getPlayerTotal;

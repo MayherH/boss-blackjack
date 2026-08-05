@@ -23,8 +23,13 @@ public class GridPanel extends JPanel
     private final JPanel header = new JPanel(new BorderLayout());
     private final JPanel lootGrid = new JPanel(new GridLayout(0, GRID_COLUMNS, 1, 1));
 
-    public final Map<Integer, Integer> itemQuantities = new HashMap<>();
+    private final Map<Integer, Integer> itemQuantities = new HashMap<>();
     private final Map<Integer, JLayeredPane> itemSlots = new HashMap<>();
+
+    public Map<Integer, Integer> getItemQuantities()
+    {
+        return Map.copyOf(itemQuantities);
+    }
 
 
 
@@ -282,4 +287,15 @@ public class GridPanel extends JPanel
 
         return slot;
     }
+    public String getRightText()
+    {
+        return rightLabel.getText();
+    }
+    public void setRightText(String text)
+    {
+        rightLabel.setText(text);
+        revalidate();
+        repaint();
+    }
+
 }
