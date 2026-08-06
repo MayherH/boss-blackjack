@@ -287,10 +287,7 @@ public class GridPanel extends JPanel
 
         return slot;
     }
-    public String getRightText()
-    {
-        return rightLabel.getText();
-    }
+
     public void setRightText(String text)
     {
         rightLabel.setText(text);

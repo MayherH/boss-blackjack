@@ -89,7 +89,7 @@ public class BlackjackPlugin extends Plugin
 			}
 		}
 		int gridValue = calculateGridValue(panel.getPlayerGrid());
-		panel.getPlayerGrid().setRightText(gridValue + " gp");
+		panel.getPlayerGrid().setRightText(String.format("%,d gp",gridValue));
 
 	}
 
