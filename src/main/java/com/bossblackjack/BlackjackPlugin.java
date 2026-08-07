@@ -87,9 +87,19 @@ public class BlackjackPlugin extends Plugin
 				int quantity = item.getQuantity();
 				panel.getPlayerGrid().addLootItem(itemId, quantity);
 			}
+			List<SimulatedDrop> drops = simulator.simulate(SupportedBoss.AMOXLIATL);
+			for (SimulatedDrop drop : drops)
+			{
+				panel.getSimGrid().addLootItem(
+						drop.getItemId(),
+						drop.getQuantity()
+				);
+			}
 		}
-		int gridValue = calculateGridValue(panel.getPlayerGrid());
-		panel.getPlayerGrid().setRightText(String.format("%,d gp",gridValue));
+		int playerGridValue = calculateGridValue(panel.getPlayerGrid());
+		panel.getPlayerGrid().setRightText(String.format("%,d gp",playerGridValue));
+		int simGridValue = calculateGridValue(panel.getSimGrid());
+		panel.getSimGrid().setRightText(String.format("%,d gp",simGridValue));
 
 	}
 

@@ -11,7 +11,6 @@ public enum SupportedBoss
     VORKATH("Vorkath"),
     ZULRAH("Zulrah"),
     VARDORVIS("Vardorvis"),
-    YAMA("Yama"),
     WHISPERER("The Whisperer"),
     SARACHNIS("Sarachnis"),
     MUSPAH("Phantom Muspah"),

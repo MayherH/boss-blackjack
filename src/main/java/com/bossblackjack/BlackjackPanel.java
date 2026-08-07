@@ -97,6 +97,7 @@ public class BlackjackPanel extends PluginPanel
                 playerGrid.clearLootGrid();
                 simGrid.clearLootGrid();
                 playerGrid.setRightText(0 + " gp");
+                simGrid.setRightText(0 + " gp");
             }
         });
     }
