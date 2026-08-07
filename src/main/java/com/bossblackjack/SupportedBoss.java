@@ -26,7 +26,8 @@ public enum SupportedBoss
     CERBERUS("Cerberus"),
     ARAXXOR("Araxxor"),
     AMOXLIATL("Amoxliatl"),
-    HYDRA("Alchemical Hydra");
+    HYDRA("Alchemical Hydra"),
+    PHOSANI("Phosani's Nightmare");
 
     private final String npcName;
 

@@ -88,5 +88,48 @@ public class LootTables {
     );
     //endregion
 
+    //region Phosani's table
+    public static final List<LootEntry> PHOSANI_TABLE = Arrays.asList(
+
+            new LootEntry(24419, 1, 1, 14), // Inq Helm
+            new LootEntry(24420, 1, 1, 14), // Inq Body
+            new LootEntry(24421, 1, 1, 14), // Inq Legs
+            new LootEntry(24417, 1, 1, 9), // Inq Mace
+            new LootEntry(24422, 1, 1, 20), // NM Staff
+            new LootEntry(24511, 1, 1, 6), // Harm orb
+            new LootEntry(24514, 1, 1, 6), // Volly orb
+            new LootEntry(24517, 1, 1, 6), // Eldritch orb
+
+            new LootEntry(564, 247, 420, 400),
+            new LootEntry(561, 165, 305, 400),
+            new LootEntry(560, 165, 305, 400),
+            new LootEntry(565, 343, 765, 400),
+            new LootEntry(566, 110, 228, 400),
+            new LootEntry(2, 137, 382, 400),
+            new LootEntry(892, 412, 957, 300),
+
+            new LootEntry(447, 165, 305, 500),
+            new LootEntry(453, 220, 458, 400),
+            new LootEntry(444, 165, 305, 400),
+            new LootEntry(449, 40, 95, 400),
+            new LootEntry(1513, 40, 95, 400),
+            new LootEntry(215, 13, 26, 400),
+            new LootEntry(219, 13, 26, 400),
+            new LootEntry(5300, 5, 10, 300),
+            new LootEntry(1621, 33, 75, 300),
+            new LootEntry(1619, 27, 60, 300),
+            new LootEntry(451, 11, 26, 200),
+
+            new LootEntry(365, 16, 29, 600),
+            new LootEntry(385, 13, 26, 600),
+            new LootEntry(139, 8, 15, 500),
+            new LootEntry(10927, 6, 12, 500),
+            new LootEntry(6687, 8, 15, 500),
+            new LootEntry(189, 8, 15, 500),
+
+            new LootEntry(995, 41417, 74500, 211)
+    );
+    //endregion
+
 
 }

@@ -87,7 +87,7 @@ public class BlackjackPlugin extends Plugin
 				int quantity = item.getQuantity();
 				panel.getPlayerGrid().addLootItem(itemId, quantity);
 			}
-			List<SimulatedDrop> drops = simulator.simulate(SupportedBoss.AMOXLIATL);
+			List<SimulatedDrop> drops = simulator.simulate(config.selectedBoss());
 			for (SimulatedDrop drop : drops)
 			{
 				panel.getSimGrid().addLootItem(

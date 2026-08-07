@@ -17,6 +17,8 @@ public class LootSimulator {
                 return LootTables.VARDORVIS_TABLE;
             case AMOXLIATL:
                 return LootTables.AMOXLIATL_TABLE;
+            case PHOSANI:
+                return LootTables.PHOSANI_TABLE;
             default:
                 return LootTables.VARDORVIS_TABLE;
         }
@@ -48,6 +50,9 @@ public class LootSimulator {
         if (boss == SupportedBoss.AMOXLIATL) {
             drops.add(new SimulatedDrop(29895,(int) (Math.random() * (20 - 2 + 1)) + 2));
             rolls = 2;
+        }
+        if(boss == SupportedBoss.PHOSANI) {
+            drops.add(new SimulatedDrop(532,1));
         }
 
         for (int i = 0; i < rolls; i++)
